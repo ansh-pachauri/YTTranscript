@@ -1,5 +1,19 @@
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-python-multipart==0.0.6
-pydantic==2.5.0
-pydantic-settings==2.1.0
+
+python-multipart
+pydantic
+pydantic-settings
+
+fastapi
+uvicorn[standard]
+python-dotenv
+youtube-transcript-api
+pytube
+yt-dlp
+tenacity
+
+# LangChain & friends
+langchain
+langchain-community
+langchain-google-genai
+faiss-cpu
+tiktoken
