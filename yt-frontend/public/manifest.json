@@ -1,0 +1,25 @@
+{
+    "manifest_version": 3,
+    "name": "YouTube Transcript Bot",
+    "version": "1.0",
+    "description": "Ask questions about the Youtube vidoes using the transcript.",
+    "premission":[
+        "storage",
+        "activeTab",
+        "scripting"
+    ],
+
+    "host-permissions": [
+        "http://localhost:8000/*",
+        "https://*/*"
+    ],
+
+    "action": {
+        "default_popup": "index.html"
+    },
+
+    "background": {
+        "service_worker": "background.js"
+    }
+
+}
