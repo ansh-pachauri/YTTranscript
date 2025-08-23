@@ -1,8 +1,14 @@
 import hashlib
+import os
 from typing import Dict, Tuple
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
 
 # In-memory retriever cache keyed by transcript hash (no DB)
 _retriever_cache: Dict[str, FAISS] = {}
@@ -20,8 +26,15 @@ def retriver(transcript_text: str):
     splitter = RecursiveCharacterTextSplitter(chunk_size=800, chunk_overlap=100)
     docs = splitter.create_documents([transcript_text])
     
+    
+    api_key = os.getenv("GOOGLE_API_KEY")
+    if not api_key:
+        raise ValueError("GOOGLE_API_KEY environment variable not set")
+    
     embeddings = GoogleGenerativeAIEmbeddings(
-        model="models/gemini-embedding-001"
+        model="models/embedding-001",   
+        google_api_key=api_key,
+        transport="grpc"
     )
     
     vector_store = FAISS.from_documents(docs, embeddings)

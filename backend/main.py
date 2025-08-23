@@ -1,9 +1,13 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 import uvicorn
 from datetime import datetime
+from services.transcript_service import fetch_transcript_text
+from services.retrevial_service import retriver
+from services.llm_service import answer_with_context
+import logging
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -26,6 +30,10 @@ class Message(BaseModel):
     text: str
     timestamp: Optional[datetime] = None
 
+class QueryRequest(BaseModel):
+    video_id: str
+    question: str
+
 class HealthResponse(BaseModel):
     status: str
     timestamp: datetime
@@ -46,16 +54,24 @@ async def health_check():
     )
 
 # Example message endpoint
-@app.post("/message", response_model=Message)
-async def create_message(message: Message):
-    if not message.timestamp:
-        message.timestamp = datetime.now()
-    return message
-
-# Get current time
-@app.get("/time")
-async def get_time():
-    return {"current_time": datetime.now().isoformat()}
+@app.post("/ask")
+def ask_question(req: QueryRequest):
+    transcript = fetch_transcript_text(req.video_id)
+    print("Transcripted fetched")
+    if not transcript:
+        raise HTTPException(status_code=404, detail="Transcript not found")
+    
+    retriv_transcript = retriver(transcript)
+    print("Retriever created")
+    try:
+        answer, context = answer_with_context(retriv_transcript, req.question)
+        return {
+            "answer": answer,
+            "context": context
+        }
+        
+    except Exception as e:  
+        raise HTTPException(status_code=500, detail=f"Processing error: {e}")  
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

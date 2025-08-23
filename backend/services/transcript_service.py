@@ -14,8 +14,15 @@ from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_excep
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-def _normalize_text(chunks:List[dict]) -> str:
-    return " ".join(chunks.get("text", "").strip() for chunks in chunks if chunks.get("text"))
+def _normalize_text(chunks) -> str:
+    texts = []
+    for chunk in chunks:
+        if isinstance(chunk, dict) and "text" in chunk:
+            texts.append(chunk["text"].strip())
+        elif hasattr(chunk, "text"):  
+            texts.append(chunk.text.strip())
+    return " ".join(texts)
+
 
 
 # helps to retry the function in case of errors
@@ -31,10 +38,10 @@ def _normalize_text(chunks:List[dict]) -> str:
 # fetching from youtube api
 def _fetch_transcript(video_id: str) -> Optional[str]:
     try:
-        transcript = YouTubeTranscriptApi.fetch(video_id, languages=["en"])
+        transcript = YouTubeTranscriptApi().fetch(video_id, languages=["en"])
         return _normalize_text(transcript)
     except (TranscriptsDisabled, NoTranscriptFound) as e:
-        logger.error(f"Captions not  for video {video_id}: {e}")
+        logger.error(f"Captions not available for video {video_id}: {e}")
     except VideoUnavailable as e:
         logger.error(f"Video {video_id} is unavailable: {e}")
     return None
