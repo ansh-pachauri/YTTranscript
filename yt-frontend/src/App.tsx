@@ -7,6 +7,7 @@ import React, { useRef, useState } from 'react'
 import { Input } from './components/ui/input'
 import { Button } from './components/ui/button'
 import axios from 'axios'
+import ReactMarkdown from 'react-markdown'
 
 
 interface Message {
@@ -33,6 +34,7 @@ function App() {
   const messagesRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const [videoId, setVideoId] = useState<string>('')
+  const [videoTitle, setVideoTitle] = useState<string>('')
 
   // handle key pressing
   const handlekeyPress = (e: React.KeyboardEvent) =>{
@@ -93,6 +95,19 @@ function App() {
 
   }
 
+  // Fetch YouTube video title
+  const fetchVideoTitle = async (vid: string) => {
+    try {
+      const response = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${vid}&format=json`);
+      if (response.ok) {
+        const data = await response.json();
+        setVideoTitle(data.title);
+      }
+    } catch (error) {
+      console.error('Error fetching video title:', error);
+    }
+  };
+
   // Auto detect video id from current tab
   React.useEffect(() => {
     if (typeof chrome !== 'undefined' && chrome.tabs) {
@@ -109,6 +124,11 @@ function App() {
           }
           
           setVideoId(vid);
+          
+          // Fetch video title if video ID exists
+          if (vid) {
+            fetchVideoTitle(vid);
+          }
         }
       });
     }
@@ -125,12 +145,24 @@ function App() {
       {/* Header */}
         <div className='flex items-center justify-between p-4 border-b border-border'>
           <div className='flex items-center gap-2 flex-1 min-w-0'>
-            <MessageSquare className='h-5 w-5 text-primary flex-shrink-0' />
+            <MessageSquare className='h-5 w-5 text-green-500 flex-shrink-0' />
             <div className='min-w-0 flex-1'>
               <h3 className='font-semibold text-sm text-foreground truncate'>
-                Video Chat
+                YT Transcript Assistant
               </h3>
-              {videoId}
+              <p>
+                <span className='text-md text-muted-foreground'>
+                Your Video title is :</span> {videoTitle ? (
+                 <p className='text-xs text-muted-foreground mt-1 truncate'>
+                   {videoTitle}
+                 </p>
+               ) : videoId ? (
+                 <p className='text-xs text-muted-foreground mt-1 font-mono'>
+                   ID: {videoId}
+                 </p>
+               ) : null}
+              </p>
+                 
             </div>
           </div>
         </div>
@@ -140,19 +172,38 @@ function App() {
           <div className='space-y-4'>
             {messages.map((message) => (
               <div key={message.id} className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}>
-                <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
-                    message.type === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {message.content}
-                  <div className='text-sm text-right opacity-70 mt-1'>
-                  {message.timestamp.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                  })}
+                                  <div
+                    className={`max-w-[80%] rounded-lg p-3 ${
+                      message.type === "user" ? "bg-emerald-100 text-emerald-900 rounded-br-none" : "bg-secondary text-secondary-foreground rounded-bl-none"
+                    }`}
+                  >
+                    {message.type === "bot" ? (
+                      <div className="prose prose-sm max-w-none">
+                        <ReactMarkdown 
+                          components={{
+                            h3: ({children}) => <h3 className="text-sm font-semibold mb-2 text-black">{children}</h3>,
+                            strong: ({children}) => <strong className="font-medium text-black">{children}</strong>,
+                            blockquote: ({children}) => <blockquote className="border-l-2 border-gray-300 text-gray-700 pl-2 italic bg-gray-50 py-1 rounded-r text-xs">{children}</blockquote>,
+                            code: ({children}) => <code className="bg-gray-200 px-1 py-0.5 rounded text-xs font-mono">{children}</code>,
+                            ul: ({children}) => <ul className="list-disc list-inside space-y-0.5 text-xs">{children}</ul>,
+                            ol: ({children}) => <ol className="list-decimal list-inside space-y-0.5 text-xs">{children}</ol>,
+                            li: ({children}) => <li className="text-xs">{children}</li>,
+                            p: ({children}) => <p className="text-xs leading-relaxed mb-1">{children}</p>
+                          }}
+                        >
+                          {message.content}
+                        </ReactMarkdown>
+                      </div>
+                    ) : (
+                      message.content
+                    )}
+                    <div className='text-[12px] text-right opacity-70 mt-1'>
+                    {message.timestamp.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit"
+                    })}
+                    </div>
                   </div>
-                </div>
               </div>
             ))
             }
@@ -195,13 +246,15 @@ function App() {
 
             />
             <Button
+            
             onClick={handleSendMessage}
-            disabled={!inputValue.trim() || isLoading} size="sm" className="px-3">
+            disabled={!inputValue.trim() || isLoading} size="sm" 
+            className="px-3 bg-green-800">
             <Send className="h-4 w-4" />
           </Button>
 
           </div>
-          <p className='text-sm text-muted-foreground text-center mt-2'>
+          <p className='text-sm  text-muted-foreground text-center mt-2'>
           Press Enter to send • Powered by AI 
           </p>
           <div className='border-border text-muted-foreground text-md text-center'>
