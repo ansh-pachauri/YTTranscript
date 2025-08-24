@@ -1,156 +1,322 @@
-# YTTranscript
+# 🎥 YT Transcript Assistant
 
+<div align="center">
 
-# YTTranscript Project
+![Chrome Extension](https://img.shields.io/badge/Chrome%20Extension-v1.0-blue?logo=google-chrome&logoColor=white)
+![AI Powered](https://img.shields.io/badge/AI%20Powered-Gemini%202.5%20Flash-green?logo=google)
+![FastAPI](https://img.shields.io/badge/Backend-FastAPI-red?logo=fastapi)
+![React](https://img.shields.io/badge/Frontend-React%20+%20TypeScript-blue?logo=react)
 
-A clean, simple FastAPI backend service with basic endpoints and automatic API documentation.
+**Your AI-powered YouTube transcript companion that helps you understand, navigate, and extract insights from video content.**
 
-## 🚀 Features
+[⭐ Star this repo](https://github.com/ansh-pachauri/YTTranscript)
 
-- **FastAPI framework** with automatic API documentation
-- **CORS middleware** for frontend integration
-- **Pydantic models** for request/response validation
-- **Health check endpoints** for monitoring
-- **Interactive API testing** via Swagger UI
-- **Hot reload** for development
+</div>
 
-## 📁 Project Structure
+---
+
+## ✨ What Can This Bot Do?
+
+The **YT Transcript Assistant** is a powerful Chrome extension that transforms how you interact with YouTube videos. Here's what makes it special:
+
+### 🧠 **AI-Powered Analysis**
+- **Smart Q&A**: Ask questions about video content and get intelligent, contextual answers
+- **Content Summarization**: Get concise summaries of video sections or entire content
+- **Key Point Extraction**: Identify and highlight important concepts and takeaways
+- **Timestamp Navigation**: Find specific moments in videos based on your queries
+
+### 🎯 **Transcript Intelligence**
+- **Automatic Detection**: Seamlessly detects YouTube video IDs from any YouTube page
+- **Real-time Processing**: Analyzes transcripts using advanced AI models
+- **Context-Aware Responses**: Provides answers based solely on actual video content
+- **Beautiful Formatting**: Responses are formatted with markdown for easy reading
+
+### 🚀 **User Experience**
+- **Chrome Extension**: Works directly in your browser - no need to copy/paste URLs
+- **Instant Access**: Click the extension icon on any YouTube page to start chatting
+- **Responsive Design**: Clean, modern interface that adapts to your needs
+- **Real-time Chat**: Interactive conversation with your video content
+
+---
+
+## 🏗️ Architecture
 
 ```
-backend/
-├── main.py              # Main FastAPI application
-├── start.py             # Startup script
-├── requirements.txt     # Python dependencies
-└── README.md           # This file
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Chrome       │    │   React          │    │   FastAPI       │
+│   Extension    │◄──►│   Frontend       │◄──►│   Backend       │
+│   (Popup)      │    │   (TypeScript)   │    │   (Python)      │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         │                       │                       │
+         │                       │                       │
+         ▼                       ▼                       ▼
+   YouTube Page           Beautiful UI            Gemini AI API
+   Detection              Components              Processing
 ```
 
-## 🛠️ Setup
+---
 
-### 1. **Navigate to the backend directory**
+## 🛠️ Tech Stack
+
+### **Frontend (Chrome Extension)**
+- **React 18** with TypeScript for robust development
+- **Tailwind CSS** for beautiful, responsive styling
+- **Chrome Extension APIs** for YouTube integration
+- **Axios** for HTTP communication
+
+### **Backend (AI Service)**
+- **FastAPI** for high-performance API endpoints
+- **LangChain** for AI workflow orchestration
+- **Google Gemini 2.5 Flash** for intelligent responses
+- **Vector Search** for context-aware transcript retrieval
+
+### **AI & Processing**
+- **Advanced Prompt Engineering** for accurate responses
+- **Context-Aware Retrieval** for relevant information
+- **Markdown Formatting** for beautiful response display
+
+---
+
+## 🚀 Quick Start
+
+### **Prerequisites**
+- Python 3.8+ installed
+- Node.js 16+ installed
+- Chrome browser
+- Google AI API key
+
+### **1. Clone the Repository**
 ```bash
+git clone https://github.com/ansh-pachauri/YTTranscript
+cd YTTranscript
+```
+
+### **2. Backend Setup**
+```bash
+# Navigate to backend directory
 cd backend
-```
 
-### 2. **Create a virtual environment**
-```bash
+# Create virtual environment
 python -m venv venv
-```
 
-### 3. **Activate the virtual environment**
-- **Windows:**
-  ```bash
-  venv\Scripts\activate
-  ```
-- **macOS/Linux:**
-  ```bash
-  source venv/bin/activate
-  ```
+# Activate virtual environment
+# Windows:
+venv\Scripts\activate
+# macOS/Linux:
+source venv/bin/activate
 
-### 4. **Install dependencies**
-```bash
+# Install dependencies
 pip install -r requirements.txt
-```
 
-## 🏃‍♂️ Running the Application
+# Set your Google AI API key
+# Create .env file and add:
+echo "GOOGLE_API_KEY=your_api_key_here" > .env
 
-### **Option 1: Using the startup script (Recommended)**
-```bash
+# Start the backend server
 python start.py
 ```
 
-### **Option 2: Direct execution**
+### **3. Frontend Setup**
 ```bash
-python main.py
+# Navigate to frontend directory
+cd yt-frontend
+
+# Install dependencies
+npm install
+
+# Build the extension
+npm run build
 ```
 
-### **Option 3: Using uvicorn directly**
-```bash
-uvicorn main:app --host 127.0.0.1 --port 8000 --reload
-```
+### **4. Load Chrome Extension**
+1. Open Chrome and go to `chrome://extensions/`
+2. Enable "Developer mode" (top right toggle)
+3. Click "Load unpacked"
+4. Select the `yt-frontend/dist` folder
+5. The extension icon should appear in your toolbar
 
-## 🌐 Accessing Your API
+### **5. Start Using**
+1. Go to any YouTube video
+2. Click the extension icon
+3. Start asking questions about the video content!
 
-Once running, your API will be available at:
-
-- **API Root**: `http://localhost:8000/`
-- **Interactive API Docs (Swagger UI)**: `http://localhost:8000/docs`
-- **Alternative API Docs (ReDoc)**: `http://localhost:8000/redoc`
-- **Health Check**: `http://localhost:8000/health`
-
-## 📋 Available Endpoints
-
-### **Core Endpoints**
-- `GET /` - Welcome message and status
-- `GET /health` - Health check with timestamp
-- `GET /time` - Current server time
-
-### **Data Endpoints**
-- `POST /message` - Create a new message
-
-## 🧪 Testing Your API
-
-### **Using the Interactive GUI (Swagger UI)**
-1. Open `http://localhost:8000/docs` in your browser
-2. Click on any endpoint to expand it
-3. Click "Try it out" to test the endpoint
-4. Fill in any required parameters
-5. Click "Execute" to see the response
-
-### **Example API Calls**
-
-#### **Test the root endpoint:**
-```bash
-curl http://localhost:8000/
-```
-
-#### **Test the health check:**
-```bash
-curl http://localhost:8000/health
-```
-
-#### **Test the message endpoint:**
-```bash
-curl -X POST "http://localhost:8000/message" \
-     -H "Content-Type: application/json" \
-     -d '{"text": "Hello, FastAPI!"}'
-```
+---
 
 ## 🔧 Configuration
 
-The application runs on:
-- **Host**: `127.0.0.1` (localhost)
-- **Port**: `8000`
-- **Reload**: Enabled for development
+### **API Configuration**
+The extension connects to your local backend by default. To change the API endpoint:
 
-## 📚 Learning Resources
+1. **Edit the API URL** in `yt-frontend/src/App.tsx`:
+```typescript
+// Change this line (around line 61)
+const res = await axios.post("http://localhost:8000/ask", {
+  // ... your data
+})
+```
 
-- [FastAPI Official Documentation](https://fastapi.tiangolo.com/)
-- [Pydantic Documentation](https://pydantic-docs.helpmanual.io/)
-- [Uvicorn Documentation](https://www.uvicorn.org/)
+2. **Update CORS settings** in `backend/main.py` if needed:
+```python
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Configure as needed
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+```
 
-## 🚀 Next Steps
+### **Environment Variables**
+Create a `.env` file in the `backend/` directory:
+```env
+GOOGLE_API_KEY=your_google_ai_api_key_here
+```
 
-1. **Add more endpoints** for your specific use case
-2. **Implement database integration** (SQLAlchemy, etc.)
-3. **Add authentication and authorization**
-4. **Implement logging and monitoring**
-5. **Add tests with pytest**
-6. **Set up CI/CD pipeline**
+---
+
+## 📱 How It Works
+
+### **1. Video Detection**
+- Extension automatically detects when you're on a YouTube page
+- Extracts video ID and fetches video title
+- No manual copying/pasting required
+
+### **2. AI Processing**
+- Your question is sent to the backend
+- AI retrieves relevant transcript segments
+- Gemini 2.5 Flash generates contextual responses
+- Responses are formatted with beautiful markdown
+
+### **3. Smart Responses**
+- **Bold text** for key concepts
+- **Bullet points** for lists
+- **Code formatting** for technical terms
+- **Blockquotes** for important statements
+- **Timestamps** when available
+
+---
+
+## 🎯 Use Cases
+
+### **For Students**
+- **Study Aid**: Ask questions about educational content
+- **Note Taking**: Extract key points and summaries
+- **Research**: Find specific information in long videos
+
+### **For Professionals**
+- **Training Videos**: Understand complex procedures
+- **Meeting Recordings**: Extract action items and decisions
+- **Product Demos**: Get quick answers about features
+
+### **For Content Creators**
+- **Content Analysis**: Understand what others are saying
+- **Research**: Find relevant information in competitor videos
+- **Fact Checking**: Verify claims made in videos
+
+---
+
+## 🔒 Privacy & Security
+
+- **Local Processing**: All AI processing happens on your backend
+- **No Data Storage**: Transcripts are processed in real-time, not stored
+- **Secure API**: Uses your own Google AI API key
+- **Chrome Permissions**: Only accesses YouTube pages when active
+
+---
+
+## 🚀 Future Enhancements
+
+- [ ] **Multi-language Support** for international videos
+- [ ] **Voice Commands** for hands-free interaction
+- [ ] **Export Features** for saving conversations
+- [ ] **Batch Processing** for multiple videos
+- [ ] **Advanced Analytics** for content insights
+- [ ] **Mobile App** for on-the-go access
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how you can help:
+
+1. **Fork the repository**
+2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
+3. **Commit your changes**: `git commit -m 'Add amazing feature'`
+4. **Push to the branch**: `git push origin feature/amazing-feature`
+5. **Open a Pull Request**
+
+### **Development Guidelines**
+- Follow TypeScript best practices
+- Use meaningful commit messages
+- Test your changes thoroughly
+- Update documentation as needed
+
+---
 
 ## 🐛 Troubleshooting
 
 ### **Common Issues**
 
-1. **Port already in use**: Change the port in `main.py` or kill the process using port 8000
-2. **Import errors**: Make sure your virtual environment is activated
-3. **Dependencies not found**: Run `pip install -r requirements.txt` again
+| Issue | Solution |
+|-------|----------|
+| Extension not loading | Check if `npm run build` completed successfully |
+| API connection failed | Verify backend is running on port 8000 |
+| No video detected | Ensure you're on a YouTube video page |
+| AI responses slow | Check your internet connection and API key |
 
-### **Getting Help**
-
-- Check the console output for error messages
-- Review the API docs at `/docs` when the server is running
-- Check the FastAPI documentation for best practices
+### **Debug Mode**
+Enable debug logging in the extension:
+1. Right-click extension icon
+2. Select "Inspect popup"
+3. Check console for error messages
 
 ---
 
-**Happy coding! 🎉**
+## 📚 API Reference
+
+### **Backend Endpoints**
+
+#### `POST /ask`
+Ask a question about a video transcript.
+
+**Request Body:**
+```json
+{
+  "question": "What are the main points discussed?",
+  "video_id": "dQw4w9WgXcQ"
+}
+```
+
+**Response:**
+```json
+{
+  "answer": "Based on the transcript, the main points discussed are...",
+  "context": "Relevant transcript segments..."
+}
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **Google Gemini AI** for powerful language processing
+- **FastAPI** for the excellent backend framework
+- **React Team** for the amazing frontend library
+- **Chrome Extension APIs** for seamless browser integration
+
+---
+
+
+<div align="center">
+
+**Made with ❤️ by [Ans Pachauri]**
+
+[⭐ Star this repo](https://github.com/ansh-pachauri/YTTranscript) • [🚀 Get Started](#-quick-start) • [📖 Learn More](#-what-can-this-bot-do)
+
+</div>
