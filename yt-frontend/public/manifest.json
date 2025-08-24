@@ -3,10 +3,11 @@
     "name": "YouTube Transcript Bot",
     "version": "1.0",
     "description": "Ask questions about the Youtube vidoes using the transcript.",
-    "premission":[
+    "permissions":[
         "storage",
         "activeTab",
-        "scripting"
+        "scripting",
+        "tabs"
     ],
 
     "host-permissions": [
